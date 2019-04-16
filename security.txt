@@ -1,0 +1,26 @@
+핸들러에 다음의 내용을 추가 한다.
+
+SuccessHandler
+
+private 으로 변수 하나 추가
+private RequestCache requestCache = new HttpSessionRequestCache();
+
+onAuthenticationSuccess method 안에 
+
+로 처음 들어온 url 을 추가
+
+SavedRequest savedRequest = requestCache.getRequest(request, response);
+request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+
+redirect 된 page 에 response 로 prevPage 을 보내고 session 지우기
+즉
+
+아래의 내용을 추가 한다.
+
+    	if(!StringUtils.isEmpty(request.getSession().getAttribute("prevPage"))) {
+    		model.addAttribute("link",request.getSession().getAttribute("prevPage") );
+    		request.getSession().removeAttribute("prevPage");
+    	}
+
+살펴볼 내용으로 link 의 url 변경.
+즉 현재의  url 이 메일로 나가는 부분에 맨 앞 부분에 /link 와 같은 url을 추가 하여 관리 한다.
